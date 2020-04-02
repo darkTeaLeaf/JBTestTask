@@ -1,5 +1,11 @@
 package expressions;
 
 abstract public class Expression {
-    public void setElement(Expression expression){}
+    protected ExpressionType type;
+
+    public abstract void setElement(Expression expression);
+
+    public ExpressionType getType() {
+        return type;
+    }
 }

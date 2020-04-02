@@ -5,6 +5,7 @@ public class ConstantExpression extends SingleExpression {
 
     public ConstantExpression(int value){
         this.value = value;
+        this.type = ExpressionType.ARITHMETIC;
     }
 
     @Override

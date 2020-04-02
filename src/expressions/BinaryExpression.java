@@ -5,10 +5,11 @@ public class BinaryExpression extends Expression {
     private Expression right;
     private char operation;
 
-    public BinaryExpression(Expression left, Expression right, char operation) {
+    public BinaryExpression(Expression left, Expression right, char operation, ExpressionType type) {
         this.left = left;
         this.right = right;
         this.operation = operation;
+        this.type = type;
     }
 
     @Override

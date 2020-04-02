@@ -1,5 +1,6 @@
 package parsers;
 
+import exceptions.InvalidTypeException;
 import exceptions.SyntaxException;
 import expressions.*;
 
@@ -20,8 +21,14 @@ public class ExpressionParser {
         char tk = get();
         while (tk == '&' || tk == '|') {
             increaseI();
-            left = new BinaryExpression(left, parseRelation(), tk);
-            tk = get();
+            Expression right = parseRelation();
+
+            if (left.getType().equals(ExpressionType.BOOLEAN) && right.getType().equals(ExpressionType.BOOLEAN)) {
+                left = new BinaryExpression(left, right, tk, ExpressionType.BOOLEAN);
+                tk = get();
+            }else {
+                throw new InvalidTypeException("unable to apply logic operation on arithmetic type expression");
+            }
         }
 
         return left;
@@ -33,8 +40,16 @@ public class ExpressionParser {
         char tk = get();
         while (tk == '>' || tk == '<' || tk == '=') {
             increaseI();
-            left = new BinaryExpression(left, parseTerm(), tk);
-            tk = get();
+            Expression right = parseRelation();
+
+            if ((left.getType().equals(ExpressionType.ARITHMETIC) && right.getType().equals(ExpressionType.ELEMENT)) ||
+                (right.getType().equals(ExpressionType.ARITHMETIC) && left.getType().equals(ExpressionType.ELEMENT)) ||
+                (left.getType().equals(ExpressionType.ARITHMETIC) && right.getType().equals(ExpressionType.ARITHMETIC))) {
+                left = new BinaryExpression(left, right, tk, ExpressionType.BOOLEAN);
+                tk = get();
+            }else {
+                throw new InvalidTypeException("unable to apply comparison operation on boolean type expression or comparison of elements");
+            }
         }
 
         return left;
@@ -46,8 +61,15 @@ public class ExpressionParser {
         char tk = get();
         while (tk == '+' || tk == '-' || tk == '*') {
             increaseI();
-            left = new BinaryExpression(left, parsePrimary(), tk);
-            tk = get();
+            Expression right = parsePrimary();
+
+            if ((left.getType().equals(ExpressionType.ARITHMETIC) || left.getType().equals(ExpressionType.ELEMENT)) &&
+                (right.getType().equals(ExpressionType.ARITHMETIC)) || right.getType().equals(ExpressionType.ELEMENT)) {
+                left = new BinaryExpression(left, right, tk, ExpressionType.ARITHMETIC);
+                tk = get();
+            } else {
+                throw new InvalidTypeException("unable to apply arithmetic operation on boolean type expression");
+            }
         }
 
         return left;
