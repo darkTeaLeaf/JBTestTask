@@ -1,36 +1,46 @@
+package parsers;
+
+import exceptions.InvalidTypeException;
+import exceptions.SyntaxException;
+import expressions.Expression;
+
 import java.util.ArrayList;
 
 public class CallParser {
     ExpressionParser expressionParser = new ExpressionParser();
 
-    public ArrayList<Node> parse(String input){
+    public ArrayList<Node> parse(String input) {
         if(!checkCallCorrectness(input)){
-            return null; //TODO exceptions
+            throw new SyntaxException("error in call syntax or invalid symbols");
         }
 
         ArrayList<Node> nodes = new ArrayList<>();
 
         for (String s : input.split("%>%")) {
-            String[] call = s.split("[{}]");
-            nodes.add(new Node(expressionParser.parse(call[1]), call[0]));
+            if(checkTypes(s)) {
+                String[] call = s.split("[{}]");
+                nodes.add(new Node(expressionParser.parse(call[1]), call[0]));
+            }else {
+                throw new InvalidTypeException("type error in the following part of code '" + s + "'");
+            }
         }
 
         return nodes;
     }
 
     private boolean checkCallCorrectness(String input){
-        return input.matches("^(map|filter)\\{[a-z0-9\\-+*><&|=()]+}(%>%(map|filter)\\{[a-z0-9\\-+*><&|=()]+})*$");
+        return input.matches("^(map|filter)\\{((element)|[0-9\\-+*><&|=()])+}(%>%(map|filter)\\{((element)|[0-9\\-+*><&|=()])+})*$");
     }
 
-//    private boolean checkTypes(){ //TODO check types
-//
-//    }
+    private boolean checkTypes(String input){
+        return input.matches("^((map\\{[a-z0-9\\-+*()]+})|filter\\{[a-z0-9&|><=()]+})");
+    }
 
-    static class Node{
+    public static class Node{
         private Expression expression;
         private String type;
 
-        Node(Expression expression, String type){
+        public Node(Expression expression, String type){
             this.expression = expression;
             this.type = type;
         }

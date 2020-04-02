@@ -1,7 +1,9 @@
+package expressions;
+
 public class ConstantExpression extends SingleExpression {
     private int value;
 
-    ConstantExpression(int value){
+    public ConstantExpression(int value){
         this.value = value;
     }
 

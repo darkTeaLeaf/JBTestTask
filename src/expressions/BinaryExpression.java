@@ -1,9 +1,11 @@
+package expressions;
+
 public class BinaryExpression extends Expression {
     private Expression left;
     private Expression right;
     private char operation;
 
-    BinaryExpression(Expression left, Expression right, char operation) {
+    public BinaryExpression(Expression left, Expression right, char operation) {
         this.left = left;
         this.right = right;
         this.operation = operation;
@@ -11,7 +13,7 @@ public class BinaryExpression extends Expression {
 
     @Override
     public String toString() {
-        return left.toString() + operation + right.toString();
+        return "(" + left.toString() + operation + right.toString() + ")";
     }
 
     @Override

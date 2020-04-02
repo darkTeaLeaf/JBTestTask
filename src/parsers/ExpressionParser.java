@@ -1,3 +1,8 @@
+package parsers;
+
+import exceptions.SyntaxException;
+import expressions.*;
+
 public class ExpressionParser {
     private String input;
     private int i;
@@ -54,7 +59,11 @@ public class ExpressionParser {
         if (get() == '(') {
             increaseI();
             expression = parseLogic();
-            increaseI();
+            if (get() == ')' && expression instanceof BinaryExpression) {
+                increaseI();
+            } else {
+                throw new SyntaxException("error in expression syntax");
+            }
         } else {
             expression = parseConstantOrElement(); //new primary?
         }
@@ -63,7 +72,9 @@ public class ExpressionParser {
     }
 
     private SingleExpression parseConstantOrElement() {
+        SingleExpression expression = null;
         StringBuilder num = new StringBuilder();
+
         char c = get();
         if (Character.isDigit(c)) {
             while (Character.isDigit(c)) {
@@ -74,7 +85,7 @@ public class ExpressionParser {
 
             int res = Integer.parseInt(num.toString());
 
-            return new ConstantExpression(res);
+            expression = new ConstantExpression(res);
         } else if (Character.isAlphabetic(c)) {
             while (Character.isAlphabetic(c)) {
                 num.append(c);
@@ -83,25 +94,20 @@ public class ExpressionParser {
             }
 
             if (num.toString().equals("element")) {
-                return new Element();
+                expression = new Element();
             }
+        } else {
+            throw new SyntaxException("error in expression syntax");
         }
-        return null; //TODO exceptions
+
+        return expression;
     }
 
     private char get() {
-        char cur;
-        while (true) {
-            if (i < input.length()) {
-                cur = input.charAt(i); //TODO delete handling spaces
-                if (cur == ' ') {
-                    increaseI();
-                } else {
-                    return input.charAt(i);
-                }
-            } else {
-                return ' ';
-            }
+        if (i < input.length()) {
+            return input.charAt(i);
+        } else {
+            return ' ';
         }
     }
 
