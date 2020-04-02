@@ -2,8 +2,7 @@ package parsers;
 
 import exceptions.InvalidTypeException;
 import exceptions.SyntaxException;
-import expressions.Expression;
-import expressions.ExpressionType;
+import expressions.*;
 
 import java.util.ArrayList;
 
@@ -44,7 +43,8 @@ public class CallParser {
     private boolean checkTypes(Expression expression, String callType) {
         return (callType.equals("filter") && (expression.getType().equals(ExpressionType.BOOLEAN) ||
                 expression.getType().equals(ExpressionType.ELEMENT))) ||
-                (callType.equals("map") && expression.getType().equals(ExpressionType.ARITHMETIC));
+                (callType.equals("map") && (expression.getType().equals(ExpressionType.ARITHMETIC) ||
+                expression.getType().equals(ExpressionType.ELEMENT)));
     }
 
     public static class Node {
@@ -68,9 +68,17 @@ public class CallParser {
             this.expression = expression;
         }
 
+        public void setElement(Expression expression){
+            if(this.expression instanceof BinaryExpression){
+                ((BinaryExpression) this.expression).setElement(expression);
+            } else if(this.expression instanceof Element){
+                this.expression = expression;
+            }
+        }
+
         @Override
         public String toString() {
-            return type + "{" + expression + "}";
+            return type.name().toLowerCase() + "{" + expression + "}";
         }
     }
 }

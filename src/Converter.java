@@ -12,7 +12,7 @@ public class Converter {
         CallParser.Node filter = new CallParser.Node(new Element(), CallType.FILTER);
 
         for (CallParser.Node node : parser.parse(input)) {
-            node.getExpression().setElement(map.getExpression());
+            node.setElement(map.getExpression());
 
             if (node.getType().equals(CallType.MAP)) {
                 map.setExpression(node.getExpression());
@@ -22,7 +22,7 @@ public class Converter {
                 if (filter.getExpression() instanceof Element) {
                     filter.setExpression(node.getExpression());
                 } else {
-                    filter.setExpression(new BinaryExpression(node.getExpression(), filter.getExpression(),
+                    filter.setExpression(new BinaryExpression(filter.getExpression(), node.getExpression(),
                             '&', ExpressionType.BOOLEAN));
                 }
             }

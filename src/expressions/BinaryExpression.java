@@ -12,23 +12,22 @@ public class BinaryExpression extends Expression {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "(" + left.toString() + operation + right.toString() + ")";
-    }
-
-    @Override
     public void setElement(Expression expression) {
         if(left instanceof Element){
             left = expression;
-        }else {
-            left.setElement(expression);
+        }else if(left instanceof BinaryExpression){
+            ((BinaryExpression)left).setElement(expression);
         }
 
         if(right instanceof Element){
             right = expression;
-        }else {
-            right.setElement(expression);
+        }else if(right instanceof BinaryExpression){
+            ((BinaryExpression)right).setElement(expression);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "(" + left.toString() + operation + right.toString() + ")";
     }
 }
