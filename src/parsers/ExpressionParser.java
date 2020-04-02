@@ -4,10 +4,22 @@ import exceptions.InvalidTypeException;
 import exceptions.SyntaxException;
 import expressions.*;
 
+/**
+ * Parsing of expression
+ *
+ * @author Arina Fedorovskaya
+ */
+
 public class ExpressionParser {
     private String input;
-    private int i;
+    private int i;  /* position of current token in string*/
 
+    /**
+     * Parsing of input string according expression rules
+     *
+     * @param input string to parse
+     * @return {@code Expression} tree of parsed expression elements
+     */
     public Expression parse(String input) {
         this.input = input;
         this.i = 0;
@@ -26,7 +38,7 @@ public class ExpressionParser {
             if (left.getType().equals(ExpressionType.BOOLEAN) && right.getType().equals(ExpressionType.BOOLEAN)) {
                 left = new BinaryExpression(left, right, tk, ExpressionType.BOOLEAN);
                 tk = get();
-            }else {
+            } else {
                 throw new InvalidTypeException("unable to apply logic operation on arithmetic type expression");
             }
         }
@@ -42,13 +54,12 @@ public class ExpressionParser {
             increaseI();
             Expression right = parseRelation();
 
-            if ((left.getType().equals(ExpressionType.ARITHMETIC) && right.getType().equals(ExpressionType.ELEMENT)) ||
-                (right.getType().equals(ExpressionType.ARITHMETIC) && left.getType().equals(ExpressionType.ELEMENT)) ||
-                (left.getType().equals(ExpressionType.ARITHMETIC) && right.getType().equals(ExpressionType.ARITHMETIC))) {
+            if ((left.getType().equals(ExpressionType.ARITHMETIC) || left.getType().equals(ExpressionType.ELEMENT)) ||
+                (right.getType().equals(ExpressionType.ARITHMETIC) || right.getType().equals(ExpressionType.ELEMENT))) {
                 left = new BinaryExpression(left, right, tk, ExpressionType.BOOLEAN);
                 tk = get();
-            }else {
-                throw new InvalidTypeException("unable to apply comparison operation on boolean type expression or comparison of elements");
+            } else {
+                throw new InvalidTypeException("unable to apply comparison operation on boolean type expression");
             }
         }
 

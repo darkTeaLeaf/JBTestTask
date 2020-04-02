@@ -63,7 +63,7 @@ public class ExpressionParserTest {
 
         InvalidTypeException thrown = assertThrows(InvalidTypeException.class, () -> parser.parse(input));
 
-        assertTrue(thrown.getMessage().contains("unable to apply comparison operation on boolean type expression or comparison of elements"));
+        assertTrue(thrown.getMessage().contains("unable to apply comparison operation on boolean type expression"));
     }
 
     @Test
